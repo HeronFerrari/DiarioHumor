@@ -6,16 +6,16 @@ export default function App() {
   const [humor, setHumor] = useState('');
   const [comentario, setComentario] = useState('');
 
-  const registrarHumor = async () => {
-    if (!humor) {
+  const registrarHumor = async(humorSelecionado) => {
+    if (!humorSelecionado) {
       Alert.alert('Escolha um humor antes de salvar.');
       return;
     }
 
   const registro = {
       data: new Date().toLocaleDateString(),
-      humor,
-      comentario,
+      humor: humorSelecionado,
+      comentario
     };
 
     try {
@@ -38,13 +38,13 @@ export default function App() {
       <Text style={styles.titulo}>Como você está se sentindo hoje?</Text>
 
       <View style={styles.opcoes}>
-        <TouchableOpacity onPress={() => registrarHumor('feliz')}>
+        <TouchableOpacity onPress={() => setHumor('feliz')}>
           <Text style={styles.emoji}>😄</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => registrarHumor('neutro')}>
+        <TouchableOpacity onPress={() => setHumor('neutro')}>
           <Text style={styles.emoji}>😐</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => registrarHumor('triste')}>
+        <TouchableOpacity onPress={() => setHumor('triste')}>
           <Text style={styles.emoji}>😢</Text>
         </TouchableOpacity>
       </View>
@@ -56,7 +56,7 @@ export default function App() {
         onChangeText={setComentario}
       />
 
-       <TouchableOpacity style={styles.botao} onPress={registrarHumor}>
+       <TouchableOpacity style={styles.botao} onPress={() => registrarHumor(humor)}>
         <Text style={styles.textoBotao}>Salvar</Text>
       </TouchableOpacity>
     </View>
