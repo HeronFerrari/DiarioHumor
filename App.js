@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const [humor, setHumor] = useState('');
   const [comentario, setComentario] = useState('');
+  const [registros, setRegistros] = useState([]);
+  const scheme = useColorScheme();
+  const isDark = scheme === 'dark';
+
+  useEffect(() => {
+  const carregarRegistros = async () => {
+    const data = await AsyncStorage.getItem('registros');
+    if (data) setRegistros(JSON.parse(data));
+    };
+  carregarRegistros();
+  }, []);
+
 
   const registrarHumor = async(humorSelecionado) => {
     if (!humorSelecionado) {
@@ -30,6 +42,15 @@ export default function App() {
     } catch (error) {
       console.error(error);
       Alert.alert('Erro ao salvar o registro.');
+    }
+  }
+
+
+  const exportarJSON = async () => {
+  const dados = await AsyncStorage.getItem('registros');
+  if (dados) {
+    const blob = new Blob([dados], { type: 'application/json' });
+    // Use expo-file-system ou share para exportar
     }
   };
 
@@ -59,6 +80,11 @@ export default function App() {
        <TouchableOpacity style={styles.botao} onPress={() => registrarHumor(humor)}>
         <Text style={styles.textoBotao}>Salvar</Text>
       </TouchableOpacity>
+      <Text style={{ fontWeight: 'bold', marginTop: 30 }}>Registros anteriores:</Text>
+      {registros.map((item, index) => (
+      <Text key={index}>{item.data} - {item.humor} - {item.comentario}</Text>
+      ))}
+
     </View>
   );
 }
