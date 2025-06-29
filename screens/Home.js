@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CalendarioHumor from '../components/CalendarioHumor';
 import GraficoHumor from '../components/GraficoHumor';
-import AppNavigator from '../AppNavigator';
 import {
   View,
   Text,
