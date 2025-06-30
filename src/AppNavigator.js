@@ -5,19 +5,19 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { Ionicons } from '@expo/vector-icons'; // Importe os ícones
 import { RegistrosProvider } from './contexts/RegistrosContext';
+// telas
 import HistoricoScreen from './screens/HistoricoScreen';
-
-// Importe suas telas
 import LoginScreen from './screens/loginScreen';
 import CadastroScreen from './screens/cadastroScreen';
 import Home from './screens/Home';
 import PerfilScreen from './screens/PerfilScreen'; // Importe a nova tela
+import { ActivityIndicator, View } from 'react-native'; // Importe ActivityIndicator para loading
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator(); // Crie o navegador de abas
 
 // Componente que define as abas para quando o usuário ESTÁ logado
-function AppTabs() {
+function AppTabs( { usuario } ) {
   return (
    <RegistrosProvider>
       <Tab.Navigator
@@ -41,8 +41,10 @@ function AppTabs() {
     >
       <Tab.Screen name="Início" component={Home} />
       <Tab.Screen name="Histórico" component={HistoricoScreen} />
-      <Tab.Screen name="Perfil" component={PerfilScreen} />
-     </Tab.Navigator>
+      <Tab.Screen name="Perfil">
+        {() => <PerfilScreen usuario={usuario} />} 
+      </Tab.Screen>
+      </Tab.Navigator>
     </RegistrosProvider>
   );
 }
@@ -60,17 +62,22 @@ export default function AppNavigator() {
     return unsubscribe;
   }, []);
 
-  if (carregando) {
-    return null; 
+   if (carregando) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {usuario ? (
-        // Se está logado, a única tela na pilha é o nosso componente de ABAS
-        <Stack.Screen name="App" component={AppTabs} />
+        // Passamos o estado 'usuario' para o AppTabs
+        <Stack.Screen name="App">
+          {() => <AppTabs usuario={usuario} />}
+        </Stack.Screen>
       ) : (
-        // Se não está logado, mostra as telas de Login e Cadastro
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Cadastro" component={CadastroScreen} />
