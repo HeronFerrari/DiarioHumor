@@ -70,20 +70,34 @@ export function RegistrosProvider({ children }) {
     );
   };
 
-    // --- NOVA FUNÇÃO DE LIMPEZA ---
-  const limparRegistros = async () => {
-    try {
-      await AsyncStorage.removeItem('registros');
-      setRegistros([]); // Limpa o estado na tela
-      Alert.alert('Sucesso', 'Todos os registros antigos foram apagados.');
-    } catch (error) {
-      console.error("Erro ao limpar registros:", error);
-      Alert.alert('Erro', 'Não foi possível apagar os registros.');
-    }
+  const limparRegistros = () => {
+   Alert.alert(
+      "Apagar Todo o Histórico", // Título do Alerta
+      "Esta ação é irreversível. Você tem certeza que deseja apagar todos os seus registros de humor?", // Mensagem
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Sim, Apagar Tudo",
+          style: "destructive",
+          // Só executa a limpeza se o usuário confirmar
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('registros');
+              setRegistros([]); // Limpa o estado na tela
+              Alert.alert('Sucesso', 'Seu histórico foi apagado.');
+            } catch (error) {
+              console.error("Erro ao limpar registros:", error);
+              Alert.alert('Erro', 'Não foi possível apagar os registros.');
+            }
+          }
+        }
+      ]
+    );
   };
 
+
   return (
-    <RegistrosContext.Provider value={{ registros, registrarHumor, deletarRegistro }}>
+    <RegistrosContext.Provider value={{ registros, registrarHumor, deletarRegistro, limparRegistros }}>
       {children}
     </RegistrosContext.Provider>
   );

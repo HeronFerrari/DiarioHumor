@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; // Importe o Tab Navigator
 import { onAuthStateChanged } from 'firebase/auth';
@@ -12,9 +12,12 @@ import CadastroScreen from './screens/cadastroScreen';
 import Home from './screens/Home';
 import PerfilScreen from './screens/PerfilScreen'; // Importe a nova tela
 import { ActivityIndicator, View } from 'react-native'; // Importe ActivityIndicator para loading
+import * as SplashScreen from 'expo-splash-screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator(); // Crie o navegador de abas
+
+SplashScreen.preventAutoHideAsync();
 
 // Componente que define as abas para quando o usuário ESTÁ logado
 function AppTabs( { usuario } ) {
@@ -62,15 +65,18 @@ export default function AppNavigator() {
     return unsubscribe;
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (carregando === false) {
+      await SplashScreen.hideAsync();
+    }
+  }, [carregando]);
+
    if (carregando) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return null;
   }
 
   return (
+  <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {usuario ? (
         // Passamos o estado 'usuario' para o AppTabs
@@ -84,5 +90,6 @@ export default function AppNavigator() {
         </>
       )}
     </Stack.Navigator>
+    </View>
   );
 }

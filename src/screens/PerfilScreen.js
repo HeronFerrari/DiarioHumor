@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, Button, StyleSheet, SafeAreaView, Alert, Switch, ActivityIndicator } from 'react-native';
+import { View, Text, Button, StyleSheet, SafeAreaView, Alert, Switch, ActivityIndicator, Image } from 'react-native';
 import { auth } from '../firebaseConfig';
 import { useRegistros } from '../contexts/RegistrosContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import PromptModal from '../components/PromptModal';
+import { Ionicons } from '@expo/vector-icons';
 
 // 1. A função agora recebe 'usuario' como uma propriedade (prop)
 function PerfilScreen({ usuario }) { 
@@ -66,6 +67,16 @@ function PerfilScreen({ usuario }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Meu Perfil</Text>
+
+        <View style={styles.avatarContainer}>
+                    {usuario.photoURL ? (
+                        // Se o usuário TEM uma photoURL, exibe a imagem
+                        <Image source={{ uri: usuario.photoURL }} style={styles.avatar} />
+                    ) : (
+                        // Se NÃO TEM, exibe um ícone padrão
+                        <Ionicons name="person-circle" size={120} color={cores.subtleText} />
+                    )}
+        </View>
 
         <View style={styles.infoContainer}>
           <Text style={styles.label}>Apelido:</Text>

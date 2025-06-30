@@ -5,6 +5,8 @@ import { format } from 'date-fns';
 import { auth } from '../firebaseConfig';
 import { useRegistros } from '../contexts/RegistrosContext'; 
 import { useTheme } from '../contexts/ThemeContext';
+import { Image } from 'react-native';
+import logo from '../../assets/diarioHumor.png';
 
 export default function Home() {
   const { cores } = useTheme();
@@ -32,6 +34,7 @@ export default function Home() {
     textoBotaoData: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 16 },
     opcoes: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20 },
     emoji: { fontSize: 50 },
+    logo: {width: '80%',  height: 100,  alignSelf: 'center',  marginBottom: 20,  },
     input: { borderWidth: 1, borderColor: cores.subtleText, borderRadius: 8, padding: 15, marginBottom: 20, minHeight: 80, color: cores.text, backgroundColor: cores.card },
     botao: { backgroundColor: '#4CAF50', padding: 15, borderRadius: 8, alignItems: 'center' },
     textoBotao: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 16 },
@@ -52,6 +55,8 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
+        <Text style={styles.titulo}>Bem vindo ao Diario de Humor ! </Text>
         <Text style={styles.titulo}>Olá, {auth.currentUser?.displayName || auth.currentUser?.email}! Como você está?</Text>
         
         <TouchableOpacity style={styles.botaoData} onPress={() => setShowPicker(true)}>
